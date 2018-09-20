@@ -37,11 +37,10 @@ public class LoadingView: UIView, CAAnimationDelegate {
     private var willStopAnimating: Bool = false
     
     // Customizable (outside of initializer)
-    var clockwise: Bool = true
-    var strokeColor: CGColor = UIColor.gray.cgColor
-    var trackColor: CGColor = UIColor.lightGray.cgColor
-    var strokeWidth: CGFloat = 10.0
-    var duration: CFTimeInterval = 1
+    public var strokeColor: CGColor = UIColor.gray.cgColor
+    public var trackColor: CGColor = UIColor.lightGray.cgColor
+    public var strokeWidth: CGFloat = 10.0
+    public var duration: CFTimeInterval = 1
     
     
     // MARK: - Functions
@@ -62,7 +61,7 @@ public class LoadingView: UIView, CAAnimationDelegate {
     
     // Private
     private func setUpShapeLayers() {
-        let circle = UIBezierPath(arcCenter: self.center, radius: radius, startAngle: 0, endAngle: 2 * CGFloat.pi, clockwise: clockwise)
+        let circle = UIBezierPath(arcCenter: self.center, radius: radius, startAngle: 0, endAngle: 2 * CGFloat.pi, clockwise: true)
         
         shapeLayer.path = circle.cgPath
         shapeLayer.fillColor = UIColor.clear.cgColor
@@ -75,12 +74,16 @@ public class LoadingView: UIView, CAAnimationDelegate {
         trackLayer.fillColor = UIColor.clear.cgColor
         trackLayer.strokeColor = trackColor
         trackLayer.lineWidth = strokeWidth
+        
+        layer.addSublayer(trackLayer)
+        layer.addSublayer(shapeLayer)
     }
     
     private func startAnimation(for keyPath: String) {
-        let animation = CABasicAnimation(keyPath: "strokeEnd")
+        let animation = CABasicAnimation(keyPath: keyPath)
         animation.toValue = 1
         animation.duration = duration
+        animation.fillMode = .forwards
         animation.isRemovedOnCompletion = false
         animation.delegate = self
         shapeLayer.add(animation, forKey: keyPath)
@@ -96,7 +99,7 @@ public class LoadingView: UIView, CAAnimationDelegate {
     
     // MARK: - CAAnimationDelegate
     
-    private func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
+    internal func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
         guard !willStopAnimating else {
             willStopAnimating = false
             isAnimating = false
