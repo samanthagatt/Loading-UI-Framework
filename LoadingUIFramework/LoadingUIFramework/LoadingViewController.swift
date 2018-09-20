@@ -37,9 +37,22 @@ public class LoadingView: UIView, CAAnimationDelegate {
     private var willStopAnimating: Bool = false
     
     // Customizable (outside of initializer)
-    public var strokeColor: CGColor = UIColor.gray.cgColor
-    public var trackColor: CGColor = UIColor.lightGray.cgColor
-    public var strokeWidth: CGFloat = 10.0
+    public var strokeColor: CGColor = UIColor.gray.cgColor {
+        didSet {
+            shapeLayer.strokeColor = strokeColor
+        }
+    }
+    public var trackColor: CGColor = UIColor.lightGray.cgColor {
+        didSet {
+            trackLayer.strokeColor = trackColor
+        }
+    }
+    public var strokeWidth: CGFloat = 10.0 {
+        didSet {
+            shapeLayer.lineWidth = strokeWidth
+            trackLayer.lineWidth = strokeWidth
+        }
+    }
     public var duration: CFTimeInterval = 1
     
     
@@ -99,7 +112,7 @@ public class LoadingView: UIView, CAAnimationDelegate {
     
     // MARK: - CAAnimationDelegate
     
-    internal func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
+    func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
         guard !willStopAnimating else {
             willStopAnimating = false
             isAnimating = false
