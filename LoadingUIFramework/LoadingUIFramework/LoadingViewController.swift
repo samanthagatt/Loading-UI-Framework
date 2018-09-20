@@ -53,7 +53,7 @@ public class LoadingView: UIView, CAAnimationDelegate {
             trackLayer.lineWidth = strokeWidth
         }
     }
-    public var duration: CFTimeInterval = 1
+    public var duration: CFTimeInterval = 1.0
     
     
     // MARK: - Functions
@@ -92,7 +92,7 @@ public class LoadingView: UIView, CAAnimationDelegate {
         layer.addSublayer(shapeLayer)
     }
     
-    private func startAnimation(for keyPath: String) {
+    private func addAnimation(for keyPath: String) {
         let animation = CABasicAnimation(keyPath: keyPath)
         animation.toValue = 1
         animation.duration = duration
@@ -106,13 +106,13 @@ public class LoadingView: UIView, CAAnimationDelegate {
         willStopAnimating = false
         shapeLayer.strokeStart = 0.0
         shapeLayer.strokeEnd = 0.0
-        startAnimation(for: "strokeEnd")
+        addAnimation(for: "strokeEnd")
     }
     
     
     // MARK: - CAAnimationDelegate
     
-    func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
+    private func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
         guard !willStopAnimating else {
             willStopAnimating = false
             isAnimating = false
@@ -123,14 +123,14 @@ public class LoadingView: UIView, CAAnimationDelegate {
             shapeLayer.strokeStart = 0.0
             shapeLayer.strokeEnd = 1.0
             shapeLayer.removeAllAnimations()
-            startAnimation(for: "strokeStart")
+            addAnimation(for: "strokeStart")
         }
         
         if let anim = anim as? CABasicAnimation, anim.keyPath == "strokeStart" {
             shapeLayer.strokeStart = 0.0
             shapeLayer.strokeEnd = 0.0
             shapeLayer.removeAllAnimations()
-            startAnimation(for: "strokeEnd")
+            addAnimation(for: "strokeEnd")
         }
     }
 }
